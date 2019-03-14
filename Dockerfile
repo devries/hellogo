@@ -1,8 +1,9 @@
-FROM golang:1.12 as golang
+FROM golang:1.12-alpine as golang
+RUN apk add --update gcc musl-dev
 ADD . /src
 RUN set -x && \
     cd /src && \
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o goapp
+    go build -a -o goapp
 
 FROM alpine
 RUN apk update && apk add ca-certificates
