@@ -11,12 +11,11 @@ RUN apk update && apk add ca-certificates
 RUN addgroup -g 2000 apprunner
 RUN adduser -u 2000 -G apprunner -S apprunner
 
-COPY --from=golang /src/goapp /app/goapp
-COPY templates /app/templates
-COPY static /app/static
+COPY --chown=apprunner:apprunner --from=golang /src/goapp /app/goapp
+COPY --chown=apprunner:apprunner templates /app/templates
+COPY --chown=apprunner:apprunner static /app/static
 
 WORKDIR /app
-RUN chown -R apprunner:apprunner /app
 
 EXPOSE 8080
 
