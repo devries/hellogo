@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-type JsonResponse struct {
+type jsonResponse struct {
 	Headers     map[string][]string `json:"headers"`
 	Environment map[string]string   `json:"environment"`
 }
@@ -35,7 +35,7 @@ func main() {
 	})
 
 	mux.HandleFunc("/json", func(w http.ResponseWriter, r *http.Request) {
-		resp := JsonResponse{r.Header, parseEnviron()}
+		resp := jsonResponse{r.Header, parseEnviron()}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(resp)
 	})
@@ -44,7 +44,7 @@ func main() {
 		http.ServeFile(w, r, "static/favicon.ico")
 	})
 
-	logHandler := LoggingHandler(mux)
+	logHandler := loggingHandler(mux)
 
 	log.Printf("Starting on port 8080\n")
 	log.Fatal(http.ListenAndServe(":8080", logHandler))
@@ -79,7 +79,7 @@ func (rec *statusRecorder) Write(p []byte) (int, error) {
 	return bc, err
 }
 
-func LoggingHandler(next http.Handler) http.Handler {
+func loggingHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		rec := statusRecorder{w, 200, 0}
 		next.ServeHTTP(&rec, req)
