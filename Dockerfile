@@ -17,8 +17,6 @@ COPY --chown=apprunner:apprunner static /app/static
 
 WORKDIR /app
 
-EXPOSE 8080
-
 USER apprunner
 
 CMD ["/app/goapp"]

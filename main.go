@@ -2,6 +2,7 @@ package main // import "github.com/devries/hellogo"
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -16,6 +17,11 @@ type jsonResponse struct {
 
 func main() {
 	mux := http.NewServeMux()
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		port = "8080"
+	}
 
 	templateFiles, err := template.ParseFiles("templates/index.html")
 	if err != nil {
@@ -46,8 +52,8 @@ func main() {
 
 	logHandler := loggingHandler(mux)
 
-	log.Printf("Starting on port 8080\n")
-	log.Fatal(http.ListenAndServe(":8080", logHandler))
+	log.Printf("Starting on port %s\n", port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), logHandler))
 }
 
 func parseEnviron() map[string]string {
