@@ -1,5 +1,5 @@
 FROM golang:1.12-alpine as golang
-RUN apk add --update gcc musl-dev
+RUN apk add --update gcc musl-dev git
 ADD . /src
 RUN set -x && \
     cd /src && \
