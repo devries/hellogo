@@ -130,6 +130,7 @@ func produceSecret(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		w.WriteHeader(500)
 		fmt.Fprintf(w, "Error: %s\n", err)
+		return
 	}
 
 	w.Write(resp.Plaintext)
