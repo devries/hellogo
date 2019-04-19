@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+    "io"
 	"log"
 	"net/http"
 	"os"
@@ -185,17 +186,17 @@ func produceSecret2(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	bodyBuffer := bytes.NewBuffer(bodyBytes)
-	decryptRequest, err := http.NewRequest("POST", fmt.Sprintf("https://cloudkms.googleapis.com/v1/%s", keyspec), bodyBuffer)
+	decryptRequest, err := http.NewRequest("POST", fmt.Sprintf("https://cloudkms.googleapis.com/v1/%s:decrypt", keyspec), bodyBuffer)
 	if err != nil {
 		w.WriteHeader(500)
 		fmt.Fprintf(w, "Error creating decryption request: %s\n", err)
 		return
 	}
 
-	decryptRequest = tokenRequest.WithContext(ctx)
+	decryptRequest = decryptRequest.WithContext(ctx)
 	decryptRequest.Header.Add("Authorization", fmt.Sprintf("Bearer %s", token.Token))
 	decryptRequest.Header.Add("Content-Type", "application/json")
-	resp, err = client.Do(tokenRequest)
+	resp, err = client.Do(decryptRequest)
 	if err != nil {
 		w.WriteHeader(500)
 		fmt.Fprintf(w, "Error performing decryption request: %s\n", err)
