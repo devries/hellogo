@@ -202,6 +202,13 @@ func produceSecret2(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	if resp.StatusCode != 200 {
+		resp.Body.Close()
+		w.WriteHeader(500)
+		fmt.Fprintf(w, "Error: Decryption was not successful: %s\n", resp.Status)
+		return
+	}
+
 	var result PlainText
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	resp.Body.Close()
@@ -210,6 +217,5 @@ func produceSecret2(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(w, "Error decoding secret: %s\n", err)
 		return
 	}
-
 	w.Write(result.Data)
 }
