@@ -1,12 +1,11 @@
-FROM golang:1.12-alpine as golang
-RUN apk add --update gcc musl-dev git
+FROM golang:1.12 as golang
 ADD . /src
 RUN set -x && \
     cd /src && \
-    go build -a -o goapp
+    CGO_ENABLED=0 GOOS=linux go build -a -v -o goapp
 
 FROM alpine
-RUN apk update && apk add ca-certificates
+RUN apk add --no-cache ca-certificates
 
 RUN addgroup -g 2000 apprunner
 RUN adduser -u 2000 -G apprunner -S apprunner
