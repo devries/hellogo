@@ -41,10 +41,16 @@ func main() {
 		if err != nil {
 			hostname = "unknown"
 		}
+		remoteAddr := r.Header.Get("X-Forwarded-For")
+		if remoteAddr == "" {
+			remoteAddr = r.RemoteAddr
+		}
 		templateFiles.ExecuteTemplate(w, "index.html", struct {
 			Hostname string
+			Address  string
 		}{
 			Hostname: hostname,
+			Address:  remoteAddr,
 		})
 	})
 
@@ -100,7 +106,11 @@ func loggingHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		rec := statusRecorder{w, 200, 0}
 		next.ServeHTTP(&rec, req)
-		log.Printf("%s - \"%s %s %s\" (for: %s) %d %d", req.RemoteAddr, req.Method, req.URL.Path, req.Proto, req.Host, rec.status, rec.byteCount)
+		remoteAddr := req.Header.Get("X-Forwarded-For")
+		if remoteAddr == "" {
+			remoteAddr = req.RemoteAddr
+		}
+		log.Printf("%s - \"%s %s %s\" (%s) %d %d", remoteAddr, req.Method, req.URL.Path, req.Proto, req.Host, rec.status, rec.byteCount)
 	})
 }
 

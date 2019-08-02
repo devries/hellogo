@@ -1,4 +1,9 @@
 FROM golang:1.12 as golang
+ADD go.mod /src/go.mod
+ADD go.sum /src/go.sum
+RUN set -x && \
+  cd /src && \
+  go get
 ADD . /src
 RUN set -x && \
     cd /src && \

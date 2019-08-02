@@ -6,8 +6,8 @@
 <title>Hello World</title>
 </head>
 <body>
-<h1>Hello World!</h1>
-<h2>From Cloud Run, Docker, and Go</h2>
+  <h1>Hello {{.Address}}!</h1>
+<h2>From Docker, and Go</h2>
 <p>This service is running in a docker container with a virtual hostname of {{.Hostname}}.</p>
 </body>
 </html>
