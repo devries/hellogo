@@ -3,8 +3,8 @@ ADD go.mod /src/go.mod
 ADD go.sum /src/go.sum
 RUN set -x && \
   cd /src && \
-  go get
-ADD . /src
+  go mod download
+ADD main.go /src/main.go
 RUN set -x && \
     cd /src && \
     CGO_ENABLED=0 GOOS=linux go build -a -v -o goapp
